@@ -22,7 +22,6 @@ def get_stats():
         return json.dumps({"type": "state", "ei":stats[1], "zw":stats[2], "dr":stats[3], "vi":stats[4], "fu":stats[5], "se":stats[6]})
 
 def state_event(websocket):
-    #return json.dumps({"type": "state", **STATE})
     return json.dumps({"type": "state", "value":DATA[websocket]})
 
 

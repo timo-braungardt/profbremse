@@ -28,12 +28,13 @@
     var slider = document.querySelector('.slider'),
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
-        ctx = document.getElementById('myChart');
+        ctx = document.getElementById('myChart'),
+        host = location.host;
 
     var states = [];
     var nbr_user = 1;
-    
-    websocket = new WebSocket("ws://85.214.185.246:6789/");
+
+    websocket = new WebSocket("ws://"+ host +":6789/");
 
     slider.onchange = function (event){
       websocket.send(JSON.stringify({value: slider.value}));
