@@ -2,7 +2,8 @@
 simples tool zum gewinnen eines Stimmungsbilds während Vorlesungen o.Ä. 
 
 
-benutzt charts.js (https://www.chartjs.org/) <br>
+benutzt [charts.js](https://www.chartjs.org/) <br>
+benötigt [websockets](https://pypi.org/project/websockets/) <br>
 stark inspiriert von https://websockets.readthedocs.io/en/stable/intro.html
 
 
