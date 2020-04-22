@@ -3,28 +3,37 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="Chart.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Profbremse</title>
   </head>
   <body>
-    <h1>Profbremse</h1>
+    <div id="container">
+      <h1>Profbremse</h1>
 
-    <p class="usercount">? user</p>
+      <p class="usercount">? user</p>
 
-    <p class="data">data</p>
-    <input type="range" min="1" max="5" value="3" class="slider">
+      <canvas id="myChart" width="350" height="300"></canvas>
 
-    <input type="checkbox" class="checkbox" id="mute">
-    <label for="mute">enthalten</label>
+      <input type="range" min="1" max="5" value="4" class="slider enabled">
 
+      <input type="checkbox" class="checkbox" id="mute">
+      <label for="mute">enthalten</label>
+
+      
+    </div>
   </body>
 
   <script>
     var slider = document.querySelector('.slider'),
         usercount = document.querySelector('.usercount'),
-        datas = document.querySelector('.data'),
-        checkbox = document.querySelector('.checkbox');
+        checkbox = document.querySelector('.checkbox'),
+        ctx = document.getElementById('myChart');
+
+    var states = [];
+    var nbr_user = 1;
     
-    websocket = new WebSocket("ws://127.0.0.1:6789/");
+    websocket = new WebSocket("ws://85.214.185.246:6789/");
 
     slider.onchange = function (event){
       websocket.send(JSON.stringify({value: slider.value}));
@@ -33,14 +42,23 @@
     websocket.onmessage = function (event) {
       data = JSON.parse(event.data);
         switch (data.type) {
+
           case 'state':
-            datas.textContent = data.ei + " " + data.zw + " " + data.dr + " " + data.vi + " " + data.fu;
+            states[0] = data.ei;
+            states[1] = data.zw;
+            states[2] = data.dr;
+            states[3] = data.vi;
+            states[4] = data.fu;
+            myChart.update();
               break;
+
           case 'users':
+            nbr_user = data.count.toString();
             usercount.textContent = (
               data.count.toString() + " user" +
               (data.count == 1 ? "" : "s"));
             break;
+
           default:
             console.error(
               "unsupported event", data);
@@ -50,13 +68,56 @@
     checkbox.onchange = function(event) {
       if(checkbox.checked == true){
         slider.setAttribute('disabled','disabled');
+        slider.classList.remove("enabled");
         websocket.send(JSON.stringify({value: 0}));
       }
       else{
         slider.removeAttribute('disabled');
+        slider.classList.add("enabled");
         websocket.send(JSON.stringify({value: slider.value}));
       }
     }
+
+
+
+    
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'],
+            datasets: [{
+                label: 'Stimmung',
+                data: states,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(235, 103, 0, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(235, 103, 0, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+          responsive: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                }]
+            }
+        }
+      })
 
   </script>
 

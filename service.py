@@ -44,7 +44,7 @@ async def notify_users():
 
 async def register(websocket):
     USERS.add(websocket)
-    DATA[websocket] = 3
+    DATA[websocket] = 4
     await notify_users()
     await notify_state()
 
