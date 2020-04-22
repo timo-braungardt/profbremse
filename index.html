@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profbremse</title>
+  </head>
+  <body>
+    <h1>Profbremse</h1>
+
+    <p class="usercount">? user</p>
+
+    <p class="data">data</p>
+    <input type="range" min="1" max="5" value="3" class="slider">
+
+    <input type="checkbox" class="checkbox" id="mute">
+    <label for="mute">enthalten</label>
+
+  </body>
+
+  <script>
+    var slider = document.querySelector('.slider'),
+        usercount = document.querySelector('.usercount'),
+        datas = document.querySelector('.data'),
+        checkbox = document.querySelector('.checkbox');
+    
+    websocket = new WebSocket("ws://127.0.0.1:6789/");
+
+    slider.onchange = function (event){
+      websocket.send(JSON.stringify({value: slider.value}));
+    }
+
+    websocket.onmessage = function (event) {
+      data = JSON.parse(event.data);
+        switch (data.type) {
+          case 'state':
+            datas.textContent = data.ei + " " + data.zw + " " + data.dr + " " + data.vi + " " + data.fu;
+              break;
+          case 'users':
+            usercount.textContent = (
+              data.count.toString() + " user" +
+              (data.count == 1 ? "" : "s"));
+            break;
+          default:
+            console.error(
+              "unsupported event", data);
+        }
+    }
+
+    checkbox.onchange = function(event) {
+      if(checkbox.checked == true){
+        slider.setAttribute('disabled','disabled');
+        websocket.send(JSON.stringify({value: 0}));
+      }
+      else{
+        slider.removeAttribute('disabled');
+        websocket.send(JSON.stringify({value: slider.value}));
+      }
+    }
+
+  </script>
+
+</html>
