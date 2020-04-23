@@ -18,7 +18,9 @@
       <input type="range" min="1" max="5" value="4" class="slider enabled">
 
       <input type="checkbox" class="checkbox" id="mute">
+      <br>
       <label for="mute">enthalten</label>
+      <span>Abgestimmt für <b id="currentValue">ok</b></span>
 
       <a href="https://github.com/drogenfrosch2/profbremse">verbessern</a>
     </div>
@@ -29,15 +31,27 @@
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
-        host = location.host;
+        currentValue = document.getElementById('currentValue')
+        host = location.host.split(':')[0];
+
 
     var states = [];
     var nbr_user = 1;
+    let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
     websocket = new WebSocket("ws://"+ host +":6789/");
 
+    function updateValue(value) {
+      websocket.send(JSON.stringify({value: value}));
+      if (value == 0) {
+        currentValue.textContent = 'Enthalten';
+      } else {
+        currentValue.textContent = labels[value - 1];
+      }
+    }
+
     slider.onchange = function (event){
-      websocket.send(JSON.stringify({value: slider.value}));
+      updateValue(slider.value);
     }
 
     websocket.onmessage = function (event) {
@@ -70,22 +84,19 @@
       if(checkbox.checked == true){
         slider.setAttribute('disabled','disabled');
         slider.classList.remove("enabled");
-        websocket.send(JSON.stringify({value: 0}));
+        updateValue(0);
       }
       else{
         slider.removeAttribute('disabled');
         slider.classList.add("enabled");
-        websocket.send(JSON.stringify({value: slider.value}));
+        updateValue(slider.value);
       }
     }
-
-
-
     
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'],
+            labels: labels,
             datasets: [{
                 label: 'Stimmung',
                 data: states,
@@ -118,7 +129,7 @@
                 }]
             }
         }
-      })
+      });
 
   </script>
 
