@@ -34,6 +34,7 @@
         currentValue = document.getElementById('currentValue')
         host = location.host.split(':')[0];
 
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
     var states = [];
     var nbr_user = 1;
@@ -93,44 +94,80 @@
       }
     }
     
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Stimmung',
-                data: states,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(235, 103, 0, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(235, 103, 0, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-          responsive: false,
-            scales: {
+    //light or dark chart
+    if(prefersDark){
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Stimmung',
+                  data: states,
+                  backgroundColor: [
+                      '#ca5151',
+                      '#ffa266',
+                      '#ffea66',
+                      '#348337',
+                      '#6a3d99'
+                  ]
+              }]
+          },
+          options: {
+            responsive: false,
+              scales: {
+                xAxes: [{gridLines: { color: "#303030" }}],
                 yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        suggestedMin: 0,
-                        suggestedMax: 10
-                    }
-                }]
-            }
-        }
-      });
+                      ticks: {
+                          beginAtZero: true,
+                          suggestedMin: 0,
+                          suggestedMax: 10
+                      },
+                      gridLines: { color: "#303030" }
+                  }]
+              }
+          }
+        });
+    }
+    else{
 
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Stimmung',
+                  data: states,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(235, 103, 0, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(235, 103, 0, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+            responsive: false,
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true,
+                          suggestedMin: 0,
+                          suggestedMax: 10
+                      }
+                  }]
+              }
+          }
+        });
+    }
   </script>
 
 </html>
