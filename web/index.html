@@ -55,15 +55,17 @@
     }
 
     websocket.onmessage = function (event) {
+
       data = JSON.parse(event.data);
         switch (data.type) {
 
           case 'state':
-            states[0] = data.ei;
-            states[1] = data.zw;
-            states[2] = data.dr;
-            states[3] = data.vi;
-            states[4] = data.fu;
+          // es muss jede einzeln ueberschrieben werden, sonst geht chart.js nicht mehr -.-
+            states[0] = data.states[0];
+            states[1] = data.states[1];
+            states[2] = data.states[2];
+            states[3] = data.states[3];
+            states[4] = data.states[4];
             myChart.update();
               break;
 

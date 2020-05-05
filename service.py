@@ -15,17 +15,14 @@ USERS = set()
 
 def get_stats():
     if DATA:
-        stats = [0] * 7
+        stats = [0] * 6
         for user in USERS:
             value = DATA[user]
             stats[value] += 1
-        return json.dumps({"type": "state", "ei":stats[1], "zw":stats[2], "dr":stats[3], "vi":stats[4], "fu":stats[5], "se":stats[6]})
-
-def state_event(websocket):
-    return json.dumps({"type": "state", "value":DATA[websocket]})
+        return json.dumps({"type": "state", "states" : [stats[1], stats[2], stats[3], stats[4], stats[5]]})
 
 
-def users_event():
+def users_count():
     return json.dumps({"type": "users", "count": len(USERS)})
 
 
@@ -37,7 +34,7 @@ async def notify_state():
 
 async def notify_users():
     if DATA:  # asyncio.wait doesn't accept an empty list
-        message = users_event()
+        message = users_count()
         await asyncio.wait([user.send(message) for user in USERS])
 
 
