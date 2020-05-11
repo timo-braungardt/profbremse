@@ -32,14 +32,14 @@
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
         currentValue = document.getElementById('currentValue')
-        host = location.host.split(':')[0];
+        host = location.host;
 
 
     var states = [];
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    websocket = new WebSocket("ws://"+ host +":6789/");
+    websocket = new WebSocket("wss://"+ host +"/wss");
 
     function updateValue(value) {
       websocket.send(JSON.stringify({value: value}));
