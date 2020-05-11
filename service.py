@@ -7,32 +7,31 @@ import json
 import logging
 import websockets
 
+from threading import RLock
+
 logging.basicConfig()
 
 DATA = dict()
+data_lock = RLock()
 
 USERS = set()
+user_lock = RLock()
 
 def get_stats():
     if DATA:
         stats = [0] * 6
-        for user in USERS:
-            value = DATA[user]
-            stats[value] += 1
-        return json.dumps({"type": "state", "states" : [stats[1], stats[2], stats[3], stats[4], stats[5]]})
+        with user_lock, data_lock:
+            for user in USERS:
+                value = DATA[user]
+                stats[value] += 1
+        return json.dumps({"type": "state", "states" : stats[1:]})
 
 
 def users_count():
     return json.dumps({"type": "users", "count": len(USERS)})
 
 
-async def notify_state():
-    if DATA:  # asyncio.wait doesn't accept an empty list
-        message = get_stats()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-
-async def notify_users():
+async def notify_users(message):
     if DATA:  # asyncio.wait doesn't accept an empty list
         message = users_count()
         await asyncio.wait([user.send(message) for user in USERS])
@@ -41,15 +40,15 @@ async def notify_users():
 async def register(websocket):
     USERS.add(websocket)
     DATA[websocket] = 4
-    await notify_users()
-    await notify_state()
+    await notify_users(users_count())
+    await notify_users(get_stats())
 
 
 async def unregister(websocket):
     USERS.remove(websocket)
     DATA.pop(websocket)
-    await notify_users()
-    await notify_state()
+    await notify_users(users_count())
+    await notify_users(get_stats())
 
 
 async def counter(websocket, path):
@@ -60,9 +59,11 @@ async def counter(websocket, path):
         async for message in websocket:
             data = json.loads(message)
             number = int(data["value"])
-            if number >= 0 and number <= 5:
-                DATA[websocket] = number
-                await notify_state()
+            # check if number in [0..5]
+            if number in range(0, 6):
+                with data_lock:
+                    DATA[websocket] = number
+                await notify_users(get_stats())
             else:
                 logging.error(data)
     finally:
