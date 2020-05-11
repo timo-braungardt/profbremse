@@ -23,6 +23,7 @@
       <span>Abgestimmt für <b id="currentValue">ok</b></span>
 
       <a href="https://github.com/drogenfrosch2/profbremse">Verbesserungsvorschläge (GitHub)</a>
+      <span style="top-margin: 1em;"><small>Gehosted als <a href="https://mathphys.info">deiner Fachschaft</a></small></span>
     </div>
   </body>
 
@@ -71,9 +72,7 @@
 
           case 'users':
             nbr_user = data.count.toString();
-            usercount.textContent = (
-              data.count.toString() + " Benutzer" +
-              (data.count == 1 ? "" : "s"));
+            usercount.textContent = ( data.count.toString() + " Benutzer") );
             break;
 
           default:
