@@ -11,7 +11,7 @@
     <div id="container">
       <h1>Profbremse</h1>
 
-      <p class="usercount">? user</p>
+      <p class="usercount">? Benutzer</p>
 
       <canvas id="myChart" width="350" height="300"></canvas>
 
@@ -22,7 +22,8 @@
       <label for="mute">enthalten</label>
       <span>Abgestimmt für <b id="currentValue">ok</b></span>
 
-      <a href="https://github.com/drogenfrosch2/profbremse">verbessern</a>
+      <a href="https://github.com/drogenfrosch2/profbremse">Verbesserungsvorschläge (GitHub)</a>
+      <span style="margin-top: 1.5em;"><small>Gehosted als ein Service <a href="https://mathphys.info">deiner Fachschaft</a></small></span>
     </div>
   </body>
 
@@ -32,14 +33,14 @@
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
         currentValue = document.getElementById('currentValue')
-        host = location.host.split(':')[0];
+        host = location.host;
 
 
     var states = [];
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    websocket = new WebSocket("ws://"+ host +":6789/");
+    websocket = new WebSocket("wss://"+ host +"/wss");
 
     function updateValue(value) {
       websocket.send(JSON.stringify({value: value}));
@@ -71,9 +72,7 @@
 
           case 'users':
             nbr_user = data.count.toString();
-            usercount.textContent = (
-              data.count.toString() + " user" +
-              (data.count == 1 ? "" : "s"));
+            usercount.textContent = ( data.count.toString() + " Benutzer" );
             break;
 
           default:

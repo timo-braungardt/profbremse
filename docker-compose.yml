@@ -1,0 +1,10 @@
+---
+version: "3.6"
+
+services:
+    profbremse:
+        image: "profbremse:latest"
+        ports:
+            - "127.0.0.1:3015:3015"
+        build:
+            context: .
