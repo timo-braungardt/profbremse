@@ -59,7 +59,7 @@
     function reportButton(){
       confirmation = confirm("Prof Nerfen?");
       if(confirmation){
-        websocket.send(JSON.stringify({type: "allert"}));
+        websocket.send(JSON.stringify({type: "alert"}));
       }
     }
 
@@ -83,8 +83,8 @@
             usercount.textContent = ( data.count.toString() + " Benutzer" );
             break;
 
-          case 'allert':
-            console.log("Recieved an allert, this is ment for the prof")
+          case 'alert':
+            console.log("Recieved an alert, this is ment for the prof")
             break;
 
           default:
