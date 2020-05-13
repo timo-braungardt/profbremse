@@ -22,6 +22,8 @@
       <label for="mute">enthalten</label>
       <span>Abgestimmt für <b id="currentValue">ok</b></span>
 
+      <button id="reportButton" onclick="reportButton()">Wiedergabeproblem</button>
+
       <a href="https://github.com/drogenfrosch2/profbremse">Verbesserungsvorschläge (GitHub)</a>
       <span style="margin-top: 1.5em;"><small>Gehosted als ein Service <a href="https://mathphys.info">deiner Fachschaft</a></small></span>
     </div>
@@ -41,9 +43,8 @@
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
     websocket = new WebSocket("wss://"+ host +"/wss");
-
     function updateValue(value) {
-      websocket.send(JSON.stringify({value: value}));
+      websocket.send(JSON.stringify({type: "update", value: value}));
       if (value == 0) {
         currentValue.textContent = 'Enthalten';
       } else {
@@ -53,6 +54,13 @@
 
     slider.onchange = function (event){
       updateValue(slider.value);
+    }
+
+    function reportButton(){
+      confirmation = confirm("Prof Nerfen?");
+      if(confirmation){
+        websocket.send(JSON.stringify({type: "allert"}));
+      }
     }
 
     websocket.onmessage = function (event) {
@@ -73,6 +81,10 @@
           case 'users':
             nbr_user = data.count.toString();
             usercount.textContent = ( data.count.toString() + " Benutzer" );
+            break;
+
+          case 'allert':
+            console.log("Recieved an allert, this is ment for the prof")
             break;
 
           default:

@@ -38,7 +38,9 @@ a{
     text-decoration: none;
 }
 
-
+#reportButton{
+    margin-top: 1em;
+}
 
 .slider {
     width: 350px;

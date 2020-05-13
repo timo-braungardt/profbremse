@@ -51,6 +51,9 @@ async def unregister(websocket):
     await notify_users()
     await notify_state()
 
+async def allert():
+    message = json.dumps({"type": "allert"})
+    await asyncio.wait([user.send(message) for user in USERS])
 
 async def counter(websocket, path):
     # register(websocket) sends user_event() to websocket
@@ -59,12 +62,17 @@ async def counter(websocket, path):
         await websocket.send(get_stats())
         async for message in websocket:
             data = json.loads(message)
-            number = int(data["value"])
-            if number >= 0 and number <= 5:
-                DATA[websocket] = number
-                await notify_state()
-            else:
-                logging.error(data)
+            
+            if data["type"] == "update":
+                number = int(data["value"])
+                if number >= 0 and number <= 5:
+                    DATA[websocket] = number
+                    await notify_state()
+                else:
+                    logging.error(data)
+
+            elif data["type"] == "allert":
+                await allert()
     finally:
         await unregister(websocket)
 
