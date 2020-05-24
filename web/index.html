@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Profbremse</title>
   </head>
-  <body onload="slider.value = 4;">
+  <body onload="document.querySelector('.slider').value = 4;">
     <div id="container">
       <h1>Profbremse</h1>
       <p id="comment">Reset nach x Minuten</p>
@@ -35,10 +35,15 @@
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
-        currentValue = document.getElementById('currentValue');
+        currentValue = document.getElementById('currentValue')
+        
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
+    currentValue = document.getElementById('currentValue');
+
 
     var reset_timer = null;
-    var reset_intervall = 900000;   //delay in ms
+    var reset_intervall = 900000;   //delay in ms 
     var host = location.host;
     var states = [];
     var nbr_user = 1;
@@ -105,7 +110,7 @@
             console.error(
               "unsupported event", data);
         }
-    }
+      }
 
     checkbox.onchange = function(event) {
       if(checkbox.checked == true){
@@ -120,47 +125,94 @@
       }
     }
     
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Stimmung',
-                data: states,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(235, 103, 0, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(235, 103, 0, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-          legend: {
-            display: false
+//light or dark chart
+    if(prefersDark){
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Stimmung',
+                  data: states,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.3)',
+                      'rgba(235, 103, 0, 0.3)',
+                      'rgba(255, 206, 86, 0.3)',
+                      'rgba(75, 192, 192, 0.3)',
+                      'rgba(153, 102, 255, 0.3)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(235, 103, 0, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)'
+                  ],
+                  borderWidth: 1
+              }]
           },
-          responsive: false,
-            scales: {
+          options: {
+            legend: {
+              display: false
+            },
+            responsive: false,
+              scales: {
+                xAxes: [{gridLines: { color: "#202020" }}],
                 yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        suggestedMin: 0,
-                        suggestedMax: 10
-                    }
-                }]
-            }
-        }
-      });
+                      ticks: {
+                          beginAtZero: true,
+                          suggestedMin: 0,
+                          suggestedMax: 10
+                      },
+                      gridLines: { color: "#202020" }
+                  }]
+              }
+          }
+        });
+    }
+    else{
 
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Stimmung',
+                  data: states,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.3)',
+                      'rgba(235, 103, 0, 0.3)',
+                      'rgba(255, 206, 86, 0.3)',
+                      'rgba(75, 192, 192, 0.3)',
+                      'rgba(153, 102, 255, 0.3)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(235, 103, 0, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+            legend: {
+              display: false
+            },
+            responsive: false,
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true,
+                          suggestedMin: 0,
+                          suggestedMax: 10
+                      }
+                  }]
+              }
+          }
+        });
+    }
   </script>
 
 </html>

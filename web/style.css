@@ -40,6 +40,7 @@ label{
 a{
     margin-top: 5em;
     text-decoration: none;
+    color: #2b99d7;
 }
 
 #reportButton{
@@ -47,8 +48,9 @@ a{
 }
 
 .slider {
-    width: 350px;
+    width: 320px;
     margin-top: 3em;
+    margin-left: 30px;
 
     -webkit-appearance: none;
     height: 8px;
@@ -79,5 +81,33 @@ a{
     border-radius: 20px;
     background: gray;
     cursor: pointer;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    body{
+        color: #e6e6e6;
+        background-color: #121212;
+    }
+
+    button{
+        background-color: #202020;
+        border-color: #202020;
+        color: gray;
+    }
+
+    .slider {
+        background: #202020;
+    }
+
+    .slider::-webkit-slider-thumb {
+        background: #404040;
+        border-width: 0px;
+    }
+
+    .slider::-moz-range-thumb {
+        background: #404040;
+        border-width: 0px;
+    }
 }
 
