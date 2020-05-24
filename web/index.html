@@ -40,10 +40,10 @@
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    websocket = new WebSocket("ws://"+ host +":6789/");
+    websocket = new WebSocket("wss://profbremse.mathphys.info/wss");
 
     function updateValue(value) {
-      websocket.send(JSON.stringify({value: value}));
+      websocket.send(JSON.stringify({type: "update", value: value}));
       if (value == 0) {
         currentValue.textContent = 'Enthalten';
       } else {
@@ -56,30 +56,34 @@
     }
 
     websocket.onmessage = function (event) {
+
       data = JSON.parse(event.data);
         switch (data.type) {
 
           case 'state':
-            states[0] = data.ei;
-            states[1] = data.zw;
-            states[2] = data.dr;
-            states[3] = data.vi;
-            states[4] = data.fu;
+          // es muss jede einzeln ueberschrieben werden, sonst geht chart.js nicht mehr -.-
+            states[0] = data.states[0];
+            states[1] = data.states[1];
+            states[2] = data.states[2];
+            states[3] = data.states[3];
+            states[4] = data.states[4];
             myChart.update();
               break;
 
           case 'users':
             nbr_user = data.count.toString();
-            usercount.textContent = (
-              data.count.toString() + " user" +
-              (data.count == 1 ? "" : "s"));
+            usercount.textContent = ( data.count.toString() + " Benutzer" );
+            break;
+
+          case 'alert':
+            console.log("Recieved an alert, this is ment for the prof");
             break;
 
           default:
             console.error(
               "unsupported event", data);
         }
-    }
+      }
 
     checkbox.onchange = function(event) {
       if(checkbox.checked == true){
@@ -104,25 +108,33 @@
                   label: 'Stimmung',
                   data: states,
                   backgroundColor: [
-                      '#ca5151',
-                      '#ffa266',
-                      '#ffea66',
-                      '#348337',
-                      '#6a3d99'
-                  ]
+                      'rgba(255, 99, 132, 0.3)',
+                      'rgba(235, 103, 0, 0.3)',
+                      'rgba(255, 206, 86, 0.3)',
+                      'rgba(75, 192, 192, 0.3)',
+                      'rgba(153, 102, 255, 0.3)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(235, 103, 0, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)'
+                  ],
+                  borderWidth: 1
               }]
           },
           options: {
             responsive: false,
               scales: {
-                xAxes: [{gridLines: { color: "#303030" }}],
+                xAxes: [{gridLines: { color: "#202020" }}],
                 yAxes: [{
                       ticks: {
                           beginAtZero: true,
                           suggestedMin: 0,
                           suggestedMax: 10
                       },
-                      gridLines: { color: "#303030" }
+                      gridLines: { color: "#202020" }
                   }]
               }
           }
@@ -138,11 +150,11 @@
                   label: 'Stimmung',
                   data: states,
                   backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(235, 103, 0, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)'
+                      'rgba(255, 99, 132, 0.3)',
+                      'rgba(235, 103, 0, 0.3)',
+                      'rgba(255, 206, 86, 0.3)',
+                      'rgba(75, 192, 192, 0.3)',
+                      'rgba(153, 102, 255, 0.3)'
                   ],
                   borderColor: [
                       'rgba(255, 99, 132, 1)',
