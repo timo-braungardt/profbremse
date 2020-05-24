@@ -7,9 +7,10 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Profbremse</title>
   </head>
-  <body>
+  <body onload="slider.value = 4;">
     <div id="container">
       <h1>Profbremse</h1>
+      <p id="comment">Reset nach x Minuten</p>
 
       <p class="usercount">? Benutzer</p>
 
@@ -34,15 +35,20 @@
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
-        currentValue = document.getElementById('currentValue')
-        host = location.host;
+        currentValue = document.getElementById('currentValue');
 
-
+    var reset_timer = null;
+    var reset_intervall = 900000;   //delay in ms
+    var host = location.host;
     var states = [];
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
     websocket = new WebSocket("wss://"+ host +"/wss");
+    //websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
+
+    document.getElementById('comment').textContent = `Reset nach ${reset_intervall/60000} Minuten`;
+    
     function updateValue(value) {
       websocket.send(JSON.stringify({type: "update", value: value}));
       if (value == 0) {
@@ -54,6 +60,9 @@
 
     slider.onchange = function (event){
       updateValue(slider.value);
+  
+      clearTimeout(reset_timer);
+      reset_timer = setTimeout(reset_vote, reset_intervall);   
     }
 
     function reportButton(){
@@ -61,6 +70,11 @@
       if(confirmation){
         websocket.send(JSON.stringify({type: "alert"}));
       }
+    }
+
+    function reset_vote(){
+      slider.value = 4;
+      updateValue(slider.value);
     }
 
     websocket.onmessage = function (event) {
@@ -84,7 +98,7 @@
             break;
 
           case 'alert':
-            console.log("Recieved an alert, this is ment for the prof")
+            console.log("Recieved an alert, this is ment for the prof");
             break;
 
           default:
