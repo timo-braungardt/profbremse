@@ -90,6 +90,12 @@ a{
         background-color: #121212;
     }
 
+    button{
+        background-color: #202020;
+        border-color: #202020;
+        color: gray;
+    }
+
     .slider {
         background: #202020;
     }

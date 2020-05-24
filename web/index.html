@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Profbremse</title>
   </head>
-  <body onload="slider.value = 4;">
+  <body onload="document.querySelector('.slider').value = 4;">
     <div id="container">
       <h1>Profbremse</h1>
       <p id="comment">Reset nach x Minuten</p>
@@ -35,6 +35,7 @@
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
+        currentValue = document.getElementById('currentValue')
         
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
@@ -42,14 +43,14 @@
 
 
     var reset_timer = null;
-    var reset_intervall = 900000;   //delay in ms
+    var reset_intervall = 900000;   //delay in ms 
     var host = location.host;
     var states = [];
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    websocket = new WebSocket("wss://"+ host +"/wss");
-    //websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
+    //websocket = new WebSocket("wss://"+ host +"/wss");
+    websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
 
     document.getElementById('comment').textContent = `Reset nach ${reset_intervall/60000} Minuten`;
     
@@ -151,6 +152,9 @@
               }]
           },
           options: {
+            legend: {
+              display: false
+            },
             responsive: false,
               scales: {
                 xAxes: [{gridLines: { color: "#202020" }}],
