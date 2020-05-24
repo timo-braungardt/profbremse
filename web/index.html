@@ -49,8 +49,8 @@
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    //websocket = new WebSocket("wss://"+ host +"/wss");
-    websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
+    websocket = new WebSocket("wss://"+ host +"/wss");
+    //websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
 
     document.getElementById('comment').textContent = `Reset nach ${reset_intervall/60000} Minuten`;
     
