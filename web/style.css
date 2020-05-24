@@ -6,8 +6,12 @@ body{
 h1 {
     font-weight: bold;
     font-size: 3em;
+    margin-bottom: 0em;
+}
 
-    
+#comment{
+    margin-top: 0em;
+    margin-bottom: 1em;
 }
 
 #container{
@@ -39,7 +43,9 @@ a{
     color: #2b99d7;
 }
 
-
+#reportButton{
+    margin-top: 1em;
+}
 
 .slider {
     width: 320px;
@@ -78,17 +84,6 @@ a{
 }
 
 
-
-
-
-@media only screen and (min-width: 600px){
-    #container{
-        margin-left: 30%;
-        margin-right: 30%;
-    }
-}
-
-
 @media (prefers-color-scheme: dark) {
     body{
         color: #e6e6e6;
@@ -109,3 +104,4 @@ a{
         border-width: 0px;
     }
 }
+

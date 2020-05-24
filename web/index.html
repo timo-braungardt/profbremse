@@ -7,11 +7,12 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Profbremse</title>
   </head>
-  <body>
+  <body onload="slider.value = 4;">
     <div id="container">
       <h1>Profbremse</h1>
+      <p id="comment">Reset nach x Minuten</p>
 
-      <p class="usercount">? user</p>
+      <p class="usercount">? Benutzer</p>
 
       <canvas id="myChart" width="350" height="300"></canvas>
 
@@ -22,7 +23,10 @@
       <label for="mute">enthalten</label>
       <span>Abgestimmt für <b id="currentValue">ok</b></span>
 
-      <a href="https://github.com/drogenfrosch2/profbremse">verbessern</a>
+      <button id="reportButton" onclick="reportButton()">Wiedergabeproblem</button>
+
+      <a href="https://github.com/drogenfrosch2/profbremse">Verbesserungsvorschläge (GitHub)</a>
+      <span style="margin-top: 1.5em;"><small>Gehosted als ein Service <a href="https://mathphys.info">deiner Fachschaft</a></small></span>
     </div>
   </body>
 
@@ -31,17 +35,24 @@
         usercount = document.querySelector('.usercount'),
         checkbox = document.querySelector('.checkbox'),
         ctx = document.getElementById('myChart'),
-        currentValue = document.getElementById('currentValue')
-        host = location.host.split(':')[0];
-
+        
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
+    currentValue = document.getElementById('currentValue');
+
+
+    var reset_timer = null;
+    var reset_intervall = 900000;   //delay in ms
+    var host = location.host;
     var states = [];
     var nbr_user = 1;
     let labels = ['Bahnhof', 'äääääh', 'äh', 'ok', 'schneller'];
 
-    websocket = new WebSocket("wss://profbremse.mathphys.info/wss");
+    websocket = new WebSocket("wss://"+ host +"/wss");
+    //websocket = new WebSocket("wss://profbremse.mathphys.info/wss");  //for local dev
 
+    document.getElementById('comment').textContent = `Reset nach ${reset_intervall/60000} Minuten`;
+    
     function updateValue(value) {
       websocket.send(JSON.stringify({type: "update", value: value}));
       if (value == 0) {
@@ -52,6 +63,21 @@
     }
 
     slider.onchange = function (event){
+      updateValue(slider.value);
+  
+      clearTimeout(reset_timer);
+      reset_timer = setTimeout(reset_vote, reset_intervall);   
+    }
+
+    function reportButton(){
+      confirmation = confirm("Prof Nerfen?");
+      if(confirmation){
+        websocket.send(JSON.stringify({type: "alert"}));
+      }
+    }
+
+    function reset_vote(){
+      slider.value = 4;
       updateValue(slider.value);
     }
 
@@ -98,7 +124,7 @@
       }
     }
     
-    //light or dark chart
+//light or dark chart
     if(prefersDark){
       var myChart = new Chart(ctx, {
           type: 'bar',
@@ -167,6 +193,9 @@
               }]
           },
           options: {
+            legend: {
+              display: false
+            },
             responsive: false,
               scales: {
                   yAxes: [{
